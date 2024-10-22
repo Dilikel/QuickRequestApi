@@ -5,7 +5,7 @@ import authRoutes from './routes/authRoutes.js'
 import cors from 'cors'
 
 const app = express()
-const PORT = process.env.PORT || 8000
+const PORT = 8000
 
 connectDB()
 
