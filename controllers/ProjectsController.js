@@ -1,3 +1,4 @@
+import mongoose from 'mongoose'
 import User from '../models/User.js'
 
 export const projectsCreate = async (req, res) => {
@@ -5,14 +6,19 @@ export const projectsCreate = async (req, res) => {
 		const { projectname } = req.body
 		const userId = req.userId
 		const user = await User.findById(userId)
+
 		if (!user) {
 			return res.status(404).json({ message: 'Пользователь не найден' })
 		}
-		const newProject = { name: projectname }
+
+		const newProject = {
+			projectId: new mongoose.Types.ObjectId().toString(),
+			name: projectname,
+		}
 		user.projects.push(newProject)
+
 		await user.save()
-		const projectId = user.projects[user.projects.length - 1].projectId
-		res.status(201).json({ projectId })
+		res.status(201).json({ projectId: newProject.projectId })
 	} catch (error) {
 		res.status(500).json({
 			message: 'Не удалось создать проект',
@@ -32,6 +38,32 @@ export const projectsGet = async (req, res) => {
 	} catch (error) {
 		res.status(500).json({
 			message: 'Не удалось получить проекты',
+			error: error.message,
+		})
+	}
+}
+
+export const projectsGetById = async (req, res) => {
+	try {
+		const userId = req.userId
+		const user = await User.findById(userId)
+
+		if (!user) {
+			return res.status(404).json({ message: 'Пользователь не найден' })
+		}
+
+		const project = user.projects.find(
+			project => project.projectId.toString() === req.params.id
+		)
+
+		if (!project) {
+			return res.status(404).json({ message: 'Проект не найден' })
+		}
+
+		res.json(project)
+	} catch (error) {
+		res.status(500).json({
+			message: 'Не удалось получить проект',
 			error: error.message,
 		})
 	}
