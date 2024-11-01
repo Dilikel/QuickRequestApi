@@ -6,6 +6,16 @@ const projectSchema = new mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		default: () => new mongoose.Types.ObjectId(),
 	},
+	resources: [
+		{
+			resourceId: {
+				type: mongoose.Schema.Types.ObjectId,
+				default: () => new mongoose.Types.ObjectId(),
+			},
+			name: { type: String, required: true },
+			body: { type: Object, required: true },
+		},
+	],
 })
 
 const userSchema = new mongoose.Schema(
