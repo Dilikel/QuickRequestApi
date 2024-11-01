@@ -68,3 +68,27 @@ export const projectsGetById = async (req, res) => {
 		})
 	}
 }
+
+export const projectRemoveById = async (req, res) => {
+	try {
+		const userId = req.userId
+		const user = await User.findById(userId)
+		if (!user) {
+			return res.status(404).json({ message: 'Пользователь не найден' })
+		}
+		const projectIndex = user.projects.findIndex(
+			project => project.projectId.toString() === req.params.id
+		)
+		if (projectIndex === -1) {
+			return res.status(404).json({ message: 'Проект не найден' })
+		}
+		user.projects.splice(projectIndex, 1)
+		await user.save()
+		res.json({ message: 'Проект успешно удалён' })
+	} catch (error) {
+		res.status(500).json({
+			message: 'Не удалось удалить проект',
+			error: error.message,
+		})
+	}
+}
