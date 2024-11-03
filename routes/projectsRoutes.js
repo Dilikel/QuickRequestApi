@@ -6,6 +6,9 @@ import {
 	projectRemoveById,
 	resourceCreate,
 	resourceGet,
+	resourceRemoveById,
+	resourceGetById,
+	resourceGetByName,
 } from '../controllers/ProjectsController.js'
 import CheckAuth from '../middlewares/CheckAuth.js'
 import {
@@ -26,5 +29,7 @@ router.post(
 	resourceCreate
 )
 router.get('/:id/resource', CheckAuth, resourceGet)
-
+router.delete('/remove/:id/resource/:resourceId', CheckAuth, resourceRemoveById)
+router.get('/:id/resource/:resourceId', CheckAuth, resourceGetById)
+router.get('/:id/:name', resourceGetByName)
 export default router
