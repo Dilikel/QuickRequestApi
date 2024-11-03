@@ -1,21 +1,21 @@
 import mongoose from 'mongoose'
 
+const resourceSchema = new mongoose.Schema({
+	resourceId: {
+		type: mongoose.Schema.Types.ObjectId,
+		default: () => new mongoose.Types.ObjectId(),
+	},
+	name: { type: String, required: true },
+	body: { type: Object, required: true },
+})
+
 const projectSchema = new mongoose.Schema({
 	name: { type: String, required: true },
 	projectId: {
 		type: mongoose.Schema.Types.ObjectId,
 		default: () => new mongoose.Types.ObjectId(),
 	},
-	resources: [
-		{
-			resourceId: {
-				type: mongoose.Schema.Types.ObjectId,
-				default: () => new mongoose.Types.ObjectId(),
-			},
-			name: { type: String, required: true },
-			body: { type: Object, required: true },
-		},
-	],
+	resources: [resourceSchema],
 })
 
 const userSchema = new mongoose.Schema(

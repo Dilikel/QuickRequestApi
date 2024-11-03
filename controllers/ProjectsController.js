@@ -12,7 +12,7 @@ export const projectsCreate = async (req, res) => {
 		}
 
 		const newProject = {
-			projectId: new mongoose.Types.ObjectId().toString(),
+			projectId: new mongoose.Types.ObjectId(),
 			name: projectname,
 		}
 		user.projects.push(newProject)
@@ -110,11 +110,8 @@ export const resourceCreate = async (req, res) => {
 		if (!project) {
 			return res.status(404).json({ message: 'Проект не найден' })
 		}
-		if (!project.resources) {
-			project.resources = []
-		}
 		const newResource = {
-			resourceId: new mongoose.Types.ObjectId().toString(),
+			resourceId: new mongoose.Types.ObjectId(),
 			name,
 			body,
 		}
