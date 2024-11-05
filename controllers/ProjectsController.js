@@ -217,7 +217,13 @@ export const resourceGetByName = async (req, res) => {
 	try {
 		const projectId = req.params.id
 		const resourceName = req.params.name
-		const user = await User.findOne()
+		const user = await User.findOne({
+			'projects.projectId': projectId,
+		})
+
+		if (!user) {
+			return res.status(404).json({ message: 'Проект не найден' })
+		}
 
 		const project = user.projects.find(
 			project => project.projectId.toString() === projectId
@@ -226,7 +232,6 @@ export const resourceGetByName = async (req, res) => {
 		if (!project) {
 			return res.status(404).json({ message: 'Проект не найден' })
 		}
-
 		const resource = project.resources.find(
 			resource => resource.name === resourceName
 		)
@@ -234,7 +239,6 @@ export const resourceGetByName = async (req, res) => {
 		if (!resource) {
 			return res.status(404).json({ message: 'Ресурс не найден' })
 		}
-
 		res.json(resource.body)
 	} catch (error) {
 		res.status(500).json({
