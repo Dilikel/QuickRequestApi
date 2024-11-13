@@ -247,3 +247,37 @@ export const resourceGetByName = async (req, res) => {
 		})
 	}
 }
+
+export const updateProjectName = async (req, res) => {
+	try {
+		const userId = req.userId
+		const projectId = req.params.id
+		const { newName } = req.body
+
+		if (!newName) {
+			return res.status(400).json({ message: 'Новое имя проекта обязательно' })
+		}
+
+		const user = await User.findById(userId)
+		if (!user) {
+			return res.status(404).json({ message: 'Пользователь не найден' })
+		}
+
+		const project = user.projects.find(
+			project => project.projectId.toString() === projectId
+		)
+		if (!project) {
+			return res.status(404).json({ message: 'Проект не найден' })
+		}
+
+		project.name = newName
+		await user.save()
+
+		res.json({ message: 'Имя проекта успешно обновлено' })
+	} catch (error) {
+		res.status(500).json({
+			message: 'Не удалось обновить имя проекта',
+			error: error.message,
+		})
+	}
+}
