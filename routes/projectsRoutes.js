@@ -10,6 +10,7 @@ import {
 	resourceGetById,
 	resourceGetByName,
 	updateProjectName,
+	resourceGetByNameAndId,
 } from '../controllers/ProjectsController.js'
 import CheckAuth from '../middlewares/CheckAuth.js'
 import {
@@ -34,5 +35,6 @@ router.delete('/remove/:id/resource/:resourceId', CheckAuth, resourceRemoveById)
 router.get('/:id/resource/:resourceId', CheckAuth, resourceGetById)
 router.get('/:id/:name', resourceGetByName)
 router.patch('/:id/change/name', CheckAuth, updateProjectName)
+router.get('/:id/:name/:objectId', resourceGetByNameAndId)
 
 export default router

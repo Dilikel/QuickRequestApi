@@ -281,3 +281,47 @@ export const updateProjectName = async (req, res) => {
 		})
 	}
 }
+
+export const resourceGetByNameAndId = async (req, res) => {
+	try {
+		const projectId = req.params.id
+		const resourceName = req.params.name
+		const objectId = parseInt(req.params.objectId)
+		const user = await User.findOne({
+			'projects.projectId': projectId,
+		})
+
+		if (!user) {
+			return res.status(404).json({ message: 'Проект не найден' })
+		}
+
+		const project = user.projects.find(
+			project => project.projectId.toString() === projectId
+		)
+
+		if (!project) {
+			return res.status(404).json({ message: 'Проект не найден' })
+		}
+		const resource = project.resources.find(
+			resource => resource.name === resourceName
+		)
+
+		if (!resource) {
+			return res.status(404).json({ message: 'Ресурс не найден' })
+		}
+
+		const resourceWithId = resource.body.find(
+			resourceWithId => resourceWithId.id === objectId
+		)
+
+		if (!resourceWithId) {
+			return res.status(404).json({ message: 'Объект с таким id не найден' })
+		}
+		res.json(resourceWithId)
+	} catch (error) {
+		res.status(500).json({
+			message: 'Не удалось получить ресурс по имени',
+			error: error.message,
+		})
+	}
+}
