@@ -217,6 +217,7 @@ export const resourceGetByName = async (req, res) => {
 	try {
 		const projectId = req.params.id
 		const resourceName = req.params.name
+		const { name } = req.query
 		const user = await User.findOne({
 			'projects.projectId': projectId,
 		})
@@ -235,6 +236,18 @@ export const resourceGetByName = async (req, res) => {
 		const resource = project.resources.find(
 			resource => resource.name === resourceName
 		)
+		const resources = resource.body
+
+		if (name) {
+			const matchingResources = resources.filter(resources =>
+				resources.name.toLowerCase().includes(name.toLowerCase())
+			)
+			if (matchingResources.length > 0) {
+				return res.json(matchingResources)
+			} else {
+				return res.status(404).json({ message: 'Ресурс не найден' })
+			}
+		}
 
 		if (!resource) {
 			return res.status(404).json({ message: 'Ресурс не найден' })
