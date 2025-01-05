@@ -11,6 +11,7 @@ import {
 	resourceGetByName,
 	updateProjectName,
 	resourceGetByNameAndId,
+	updateResource,
 } from '../controllers/ProjectsController.js'
 import CheckAuth from '../middlewares/CheckAuth.js'
 import {
@@ -36,5 +37,6 @@ router.get('/:id/resource/:resourceId', CheckAuth, resourceGetById)
 router.get('/:id/:name', resourceGetByName)
 router.patch('/:id/change/name', CheckAuth, updateProjectName)
 router.get('/:id/:name/:objectId', resourceGetByNameAndId)
+router.patch('/change/resource', CheckAuth, updateResource)
 
 export default router

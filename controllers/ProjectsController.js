@@ -338,3 +338,51 @@ export const resourceGetByNameAndId = async (req, res) => {
 		})
 	}
 }
+
+export const updateResource = async (req, res) => {
+	try {
+		const { projectId, resourceId, resourceName, body } = req.body
+		const userId = req.userId
+
+		const user = await User.findById(userId)
+		if (!user) {
+			return res.status(404).json({ message: 'Пользователь не найден' })
+		}
+
+		const project = user.projects.find(
+			project => project.projectId.toString() === projectId
+		)
+		if (!project) {
+			return res.status(404).json({ message: 'Проект не найден' })
+		}
+
+		const resource = project.resources.find(
+			resource => resource.resourceId.toString() === resourceId
+		)
+		if (!resource) {
+			return res.status(404).json({ message: 'Ресурс не найден' })
+		}
+
+		if (resourceName) {
+			resource.name = resourceName
+		}
+
+		if (body && Array.isArray(body)) {
+			resource.body = body.map(item => {
+				if (!item.id || !item.name) {
+					throw new Error('Каждый элемент в body должен содержать id и name')
+				}
+				return { id: item.id, name: item.name }
+			})
+		}
+
+		await user.save()
+
+		res.json({ message: 'Ресурс успешно обновлен', resource })
+	} catch (error) {
+		res.status(500).json({
+			message: 'Не удалось обновить ресурс',
+			error: error.message,
+		})
+	}
+}
