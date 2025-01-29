@@ -368,12 +368,12 @@ export const updateResource = async (req, res) => {
 		}
 
 		if (body && Array.isArray(body)) {
-			resource.body = body.map(item => {
+			for (const item of body) {
 				if (!item.id || !item.name) {
 					throw new Error('Каждый элемент в body должен содержать id и name')
 				}
-				return { id: item.id, name: item.name }
-			})
+			}
+			resource.body = body
 		}
 
 		await user.save()
