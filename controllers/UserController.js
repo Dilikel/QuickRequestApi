@@ -7,7 +7,8 @@ export const register = async (req, res) => {
 	try {
 		const user = await registerUser(req.body)
 		const token = createToken(user._id)
-		res.json({ token })
+		const { passwordHash, ...userWithoutPassword } = user._doc
+		res.json({ token, user: userWithoutPassword })
 		sendEmail(
 			user.email,
 			'Добро пожаловать в QuickRequest',
@@ -23,7 +24,8 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
 	try {
 		const { token, user } = await loginUser(req.body.email, req.body.password)
-		res.json({ token })
+		const { passwordHash, ...userWithoutPassword } = user._doc
+		res.json({ token, user: userWithoutPassword })
 		sendEmail(
 			user.email,
 			'Успешный вход на QuickRequest',
@@ -40,7 +42,8 @@ export const getMe = async (req, res) => {
 		if (!user) {
 			return res.status(404).json({ message: 'Пользователь не найден' })
 		}
-		res.json(user)
+		const token = createToken(user._id)
+		res.json({ user, token })
 	} catch (error) {
 		res.status(500).json({
 			message: 'Не удалось получить данные пользователя',
